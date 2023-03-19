@@ -1,49 +1,49 @@
 from datetime import datetime, timedelta
 
-users = [{"name": "Vasya", "birthday": "2000-03-20"},
-         {"name": "Tanya", "birthday": "2000-03-22"},
-         {"name": "Ylya", "birthday": "2000-03-27"},
-         {"name": "Petya", "birthday": "2000-03-25"},
-         {"name": "Sergey", "birthday": "2000-03-19"},
-         {"name": "Denis", "birthday": "2000-03-24"},
-         {"name": "Alex", "birthday": "2000-03-18"},
-         {"name": "Anatoliy", "birthday": "2000-03-24"},
-         {"name": "Olena", "birthday": "2000-03-15"},
-         {"name": "Daria", "birthday": "2000-03-21"},
-         {"name": "Alona", "birthday": "2000-03-17"},
-         {"name": "Ihor", "birthday": "2000-03-31"}]
-weeks_day = {"Monday": [],
-             "Tuesday": [],
-             "Wednesday": [],
-             "Thursday": [],
-             "Friday": []}
 
-def get_birthdays_per_week(users: list) -> None:
+users = [{"name": "Vasya", "birthday": "20.03.2000"},
+         {"name": "Tanya", "birthday": "22.03.2000"},
+         {"name": "Ylya", "birthday": "27.03.2000"},
+         {"name": "Petya", "birthday": "25.03.2000"},
+         {"name": "Sergey", "birthday": "19.03.2000"},
+         {"name": "Denis", "birthday": "24.03.2000"},
+         {"name": "Alex", "birthday": "18.03.2000"},
+         {"name": "Anatoliy", "birthday": "24.03.2000"},
+         {"name": "Olena", "birthday": "15.03.2000"},
+         {"name": "Daria", "birthday": "21.03.2000"},
+         {"name": "Alona", "birthday": "17.03.2000"},
+         {"name": "Ihor", "birthday": "21.03.2000"}]
+
+
+def get_birthdays_per_week(users):
+    days_week = {"Monday": [],
+                 "Tuesday": [],
+                 "Wednesday": [],
+                 "Thursday": [],
+                 "Friday": []}
 
     today = datetime.now().date()
-    day_of_week = today.weekday()
-    next_monday = (today + timedelta(days=7 - day_of_week))
-    next_friday = (today + timedelta(days=11 - day_of_week))
-    last_saturday = (next_monday - timedelta(days=2))
 
     for user in users:
-        user_date = user['birthday'].split('-')
-        bth_date = datetime(year=today.year, month=int(user_date[1]), day=int(user_date[2])).date()
-        
-        if last_saturday <= bth_date < next_monday:
-            weeks_day['Monday'].append(user['name'] + ' ' + user_date[1] + '/' + user_date[2])
-        elif next_monday <= bth_date <= next_friday:
-            weeks_day[bth_date.strftime('%A')].append(user['name'] + ' ' + user_date[1] + '/' + user_date[2])
-            
-    for day, bth in weeks_day.items():
-        
+        bth = datetime.strptime(user.get("birthday"), "%d.%m.%Y")
+        btn_this_year = bth.replace(year=today.year).date()
+        diff = btn_this_year - today
+        if timedelta(-2) <= diff <= timedelta(4):
+            days = datetime.weekday(btn_this_year)
+            if days == 0 or days >= 5:
+                days_week["Monday"].append(user["name"] + ' ' + str(bth.day) + '/' + str(bth.month))
+            else:
+                days_week[btn_this_year.strftime("%A")].append(user["name"] + ' ' + str(bth.day) + '/' + str(bth.month))
+
+
+    for day, bth in days_week.items():
         if not bth:
             continue
         else:
-            print_n_b = ', '.join(bth)
-            print(f"{day}: {print_n_b}.")
+            name_btn = ', '.join(bth)
+            print(f'{day}: {name_btn}')
 
 
-if __name__ == "__main__":
-    print("Don't forget to congratulate:\n")
+if __name__ == '__main__':
+
     get_birthdays_per_week(users)
